@@ -91,6 +91,8 @@ queue_enhanced_driver: /home/jihwanshin24/B16/B1602.1_tutorial/part-1/queue_enha
 Aborted (core dumped)
 ```
 
+<!-- * _position was explained during the tutorial and corrections have been made to the implementation. -->
+
 ## 5 Lists
 
 ### 5.1 Deleting elements from a list
@@ -230,6 +232,8 @@ Each chain can correspond to a slot in the table where there are $m$ such slots.
 
 The worst case complexity would be when the element for retrieval is at the end of the linked list, which would mean $O(\frac{n}{m})$.
 
+<!-- * We need to prove using the inequality with K (the universe). Time complexity is also wrong. If all n elements are from one chain, the worst-case complexity would be $O(n)$. -->
+
 ### 8.2 Other usages of hash functions
 
 We can create a hash function that makes a hash based on the contents of the file so that it can be a distinct signature. If the contents of the file are changed, so would the hash.
@@ -263,14 +267,22 @@ uint32_t hash(const std::string& str, const uint32_t m)
 }
 ```
 
+<!-- * This is not what the solution does and it is likely wrong. The solution uses bit-shift until the key becomes an integer, then uses the modulus so that it can work properly. -->
+
+<!-- * There is a mistake in expanding the 256^i. It should not be *i, it should be ^i instead. -->
+
 <!-- ! -->
 ### 8.4 Permutation invariance of the division method
 
 If $m = 255$: $(256 \mod m)$ would be $1$. This could be a reason why the hash is invariant to the permutation of the characters in the string, but I am not completely sure.
 
+<!-- * Apparently 256^i mod 255 = (256 mod 255)^i = 1. -->
+
 This is not desirable because we want to distinguish strings even if they are permutations of one another.
 
 ## 9 Graphs
+
+<!-- * Look more into the explanation of all the shortest path algorithms to understand how they work. -->
 
 <!-- ! -->
 ### 9.1 Shortest paths using the adjacency list representation
@@ -304,16 +316,79 @@ Bellman-Ford from source 2
 [(inf,-1), (inf,-1), (0,-1), (9,6), (18,3), (4,2), (6,5), (7,6), (2,2)]
 ```
 
+<!-- * Try not to have the separate relax function for sparse graphs. -->
+<!-- * has_negative_cycle does not actually check negative cycles. Check solutions for more information. -->
+<!-- * Dijkstra's implementation uses Priority Queue in the solution. Investigate why. -->
+
 <!-- ! -->
 ### 9.2 Decoding shortest paths
 
-I could not come up with a solution to implement multi-step paths. I don't think I fully understand DP.
+The solution needs debugging, as it is in reverse order and does not include the final node.
 
 Implementation: [shortest_paths_decode.hpp](part-4/shortest_paths_decode.hpp)
 
 Output for [shortest_paths_fw_decode_driver.cpp](part-4/shortest_paths_fw_decode_driver.cpp):
 
 ```bash
+digraph G {
+    0 -> 1 [label= 4];
+    0 -> 7 [label= 8];
+    1 -> 7 [label= 11];
+    2 -> 5 [label= 4];
+    2 -> 8 [label= 2];
+    3 -> 4 [label= 9];
+    3 -> 5 [label= 14];
+    4 -> 5 [label= 10];
+    5 -> 6 [label= 2];
+    6 -> 3 [label= 3];
+    6 -> 7 [label= 1];
+    6 -> 8 [label= 6];
+    7 -> 8 [label= 7];
+}
+
+Floyd-Warshall ASPS
+[(0,-1), (4,0), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (8,0), (15,7)]
+[(inf,-1), (0,-1), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (11,1), (18,7)]
+[(inf,-1), (inf,-1), (0,-1), (9,6), (18,3), (4,2), (6,5), (7,6), (2,2)]
+[(inf,-1), (inf,-1), (inf,-1), (0,-1), (9,3), (14,3), (16,5), (17,6), (22,6)]
+[(inf,-1), (inf,-1), (inf,-1), (15,6), (0,-1), (10,4), (12,5), (13,6), (18,6)]
+[(inf,-1), (inf,-1), (inf,-1), (5,6), (14,3), (0,-1), (2,5), (3,6), (8,6)]
+[(inf,-1), (inf,-1), (inf,-1), (3,6), (12,3), (17,3), (0,-1), (1,6), (6,6)]
+[(inf,-1), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (0,-1), (7,7)]
+[(inf,-1), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (inf,-1), (0,-1)]
+
+Shortest path 0 ~~> 1 (weight 4): [0]
+Shortest path 0 ~~> 7 (weight 8): [0]
+Shortest path 0 ~~> 8 (weight 15): [7, 0]
+Shortest path 1 ~~> 7 (weight 11): [1]
+Shortest path 1 ~~> 8 (weight 18): [7, 1]
+Shortest path 2 ~~> 3 (weight 9): [6, 5, 2]
+Shortest path 2 ~~> 4 (weight 18): [3, 6, 5, 2]
+Shortest path 2 ~~> 5 (weight 4): [2]
+Shortest path 2 ~~> 6 (weight 6): [5, 2]
+Shortest path 2 ~~> 7 (weight 7): [6, 5, 2]
+Shortest path 2 ~~> 8 (weight 2): [2]
+Shortest path 3 ~~> 4 (weight 9): [3]
+Shortest path 3 ~~> 5 (weight 14): [3]
+Shortest path 3 ~~> 6 (weight 16): [5, 3]
+Shortest path 3 ~~> 7 (weight 17): [6, 5, 3]
+Shortest path 3 ~~> 8 (weight 22): [6, 5, 3]
+Shortest path 4 ~~> 3 (weight 15): [6, 5, 4]
+Shortest path 4 ~~> 5 (weight 10): [4]
+Shortest path 4 ~~> 6 (weight 12): [5, 4]
+Shortest path 4 ~~> 7 (weight 13): [6, 5, 4]
+Shortest path 4 ~~> 8 (weight 18): [6, 5, 4]
+Shortest path 5 ~~> 3 (weight 5): [6, 5]
+Shortest path 5 ~~> 4 (weight 14): [3, 6, 5]
+Shortest path 5 ~~> 6 (weight 2): [5]
+Shortest path 5 ~~> 7 (weight 3): [6, 5]
+Shortest path 5 ~~> 8 (weight 8): [6, 5]
+Shortest path 6 ~~> 3 (weight 3): [6]
+Shortest path 6 ~~> 4 (weight 12): [3, 6]
+Shortest path 6 ~~> 5 (weight 17): [3, 6]
+Shortest path 6 ~~> 7 (weight 1): [6]
+Shortest path 6 ~~> 8 (weight 6): [6]
+Shortest path 7 ~~> 8 (weight 7): [7]
 ```
 
 ## 10 Further examples (optional)

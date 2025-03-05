@@ -31,8 +31,11 @@ template <typename T> class Dequeue : public Queue<T>
     {
         // WRITE YOUR CODE HERE
         assert(this->_size < this->_storage.size());
-        this->_storage[this->_position + this->_size] = value;
         this->_size++;
+        this->_storage[this->_head()] = value;
+
+        // * We can increase the size and add the new element to the head.
+        // * But it throws an error? Check assert.
     }
 
     // Remove the element at the back of the queue
@@ -40,16 +43,27 @@ template <typename T> class Dequeue : public Queue<T>
     {
         // WRITE YOUR CODE HERE
         assert(this->_size >= 1);
-        this->_storage.erase(this->_storage.begin() + this->_tail());
         this->_size--;
+        if (this->_position + 1 == this->_storage.size()) {
+            this->_position = 0;
+        } else {
+            this->_position++;
+        }
+
+        // * We don't have to erase any of the storage. Just fix _size and
+        // _position.
     }
 
     // Remove all elements from the queue
-    void clear() { 
+    void clear()
+    {
         // WRITE YOUR CODE HERE
-        this->_storage.clear();
         this->_size = 0;
-        this->_position = 0;
+
+        // * We don't actually have to clear _storage because when _size is 0 it
+        // would ignore the elements and overwrite them.
+        // * We don't need to reset _position either, because we can start the
+        // queue from anywhere in the vector and it would not matter.
     }
 
   protected:
@@ -57,9 +71,10 @@ template <typename T> class Dequeue : public Queue<T>
     size_t _tail() const
     {
         // WRITE YOUR CODE HERE
-        assert(this->_size >= 1);
-        auto index = this->_position;
-        return index;
+        if (this->_position + 1 == this->_storage.size()) { return 0; }
+        return this->_position + 1;
+
+        // * This is wrong. Refer to solution.
     }
 };
 

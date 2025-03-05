@@ -9,9 +9,10 @@ inline std::vector<int> decode(const std::vector<hop_t> &DP, int v)
 {
     std::vector<int> path;
 
-    if (DP[v].vertex != -1)
+    while (DP[v].vertex != -1)
     {
         path.push_back(DP[v].vertex);
+        v = DP[v].vertex;
     }
 
     return path;
