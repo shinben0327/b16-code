@@ -14,10 +14,7 @@ template <typename V> struct BinaryTree {
     friend V &value(BinaryTree *t) { return t->_value; }
     friend const V &value(const BinaryTree *t) { return t->_value; }
     friend BinaryTree *left(BinaryTree *t) { return t->_left.get(); }
-    friend BinaryTree *right(BinaryTree *t)
-    {
-        return t->_right.get();
-    }
+    friend BinaryTree *right(BinaryTree *t) { return t->_right.get(); }
 };
 
 // A helper function to build a binary tree

@@ -16,13 +16,13 @@ int main(int argc, const char *argv[])
         std::cout << std::endl;
     }
 
-    {
-        int source = 2;
-        std::cout << "Dijkstra from source " << source << std::endl;
-        auto DP = dijkstra(graph, source);
-        print(DP);
-        std::cout << std::endl;
-    }
+    // {
+    //     int source = 2;
+    //     std::cout << "Dijkstra from source " << source << std::endl;
+    //     auto DP = dijkstra(graph, source);
+    //     print(DP);
+    //     std::cout << std::endl;
+    // }
 
     return 0;
 }
